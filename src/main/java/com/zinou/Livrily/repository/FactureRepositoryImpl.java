@@ -94,7 +94,7 @@ public class FactureRepositoryImpl implements FactureRepository {
 	public Facture createFacture(Facture Facture) {		
 
 		//		TODO corriger requette
-		String sql = "INSERT INTO `Facture` ( `Livraison_ID`, `Client_ID`, `NumeroFacture`, `tarif`, `tva`, `total`) VALUES  (?,?,?,?,?,?) ";
+		String sql = "INSERT INTO `Facture` ( `Livraison_ID`, `Client_ID`, `NumeroFacture`, `tarif`, `tva`) VALUES  (?,?,?,?,?) ";
 		PreparedStatement stmt;
 		try {
 			stmt = db.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -102,8 +102,7 @@ public class FactureRepositoryImpl implements FactureRepository {
 			stmt.setInt(2, Facture.getClient_ID());
 			stmt.setString(3, Facture.getNumeroFacture());
 			stmt.setString(4, Facture.getTarif());
-			stmt.setInt(4, Facture.getTva());
-			stmt.setDouble(5, Facture.getTotal());
+			stmt.setInt(5, Facture.getTva());
 
 
 			stmt.executeUpdate();
@@ -127,7 +126,7 @@ public class FactureRepositoryImpl implements FactureRepository {
 	public FactureLine createFactureLine(FactureLine line) {		
 
 		//		TODO corriger requette
-		String sql = "INSERT INTO `Facture_Line` ( `Facture_ID`, `produit_id`, `quantityFacture`, `totalLine`) VALUES  (?,?,?,?) ";
+		String sql = "INSERT INTO `Facture_Line` ( `Facture_ID`, `produit_id`, `quantityFacture`, `totalLine`,`prix`) VALUES  (?,?,?,?,?) ";
 		PreparedStatement stmt;
 		try {
 			stmt = db.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -135,6 +134,7 @@ public class FactureRepositoryImpl implements FactureRepository {
 			stmt.setInt(2, line.getProduitID());
 			stmt.setInt(3, line.getQuantityFacture());
 			stmt.setDouble(4, line.getTotalLine());
+			stmt.setDouble(5, line.getPrix());
 
 			stmt.executeUpdate();
 
@@ -157,7 +157,7 @@ public class FactureRepositoryImpl implements FactureRepository {
 	public void updateFacture(Double volumneTotal, int Facture_id) {		
 
 		//		TODO corriger requette
-		String sql = "UPDATE `Facture` set volume = ?  where Facture_id = ? ";
+		String sql = "UPDATE `Facture` set total = ?  where facture_id = ? ";
 		PreparedStatement stmt;
 		try {
 			stmt = db.getConnection().prepareStatement(sql);

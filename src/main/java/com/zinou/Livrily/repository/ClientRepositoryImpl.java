@@ -2,13 +2,10 @@ package com.zinou.Livrily.repository;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.zinou.Livrily.model.Client;
-import com.zinou.Livrily.model.Produit;
 
 import util.DB;
 import util.DBImpl;
@@ -35,7 +32,6 @@ public class ClientRepositoryImpl implements ClientRepository {
 				client.setEnvoyerMail(rs.getBoolean("envoyerMail"));
 				client.setEnvoyerSMS(rs.getBoolean("envoyerSMS"));
 				client.setNumCarteCredit(rs.getInt("NumCarteCredit"));
-				client.setTarif(rs.getString("tarif"));
 			}
 
 			return client;

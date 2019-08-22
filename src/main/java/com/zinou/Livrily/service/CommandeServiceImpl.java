@@ -52,8 +52,9 @@ public class CommandeServiceImpl implements CommandeService {
 		List<CommandeLine> lines = new ArrayList<>();
 
 		for (CommandeSimple c : commandes) {
+			int produit_id=c.getProduit_id();
 
-			Produit produit =  articleService.getProduit(c.getProduit_id());
+			Produit produit =  articleService.getProduit(produit_id);
 			CommandeLine line = new CommandeLine();
 			line.setCommande_ID(commande.getCommande_ID());
 			line.setPrix(produit.getPrixDevante());
@@ -71,7 +72,7 @@ public class CommandeServiceImpl implements CommandeService {
 		commandeComplete.setCommandelines(lines);
 
 		repository.updateCommande(prixTotal, commande.getCommande_ID());
-
+		commande.setTotal(prixTotal);
 		return commandeComplete;
 	}
 

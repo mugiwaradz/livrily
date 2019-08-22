@@ -11,8 +11,6 @@ import java.util.logging.Logger;
 
 import org.springframework.stereotype.Service;
 
-import com.zinou.Livrily.model.CommandeLine;
-import com.zinou.Livrily.model.Commandecomplette;
 import com.zinou.Livrily.model.Livraison;
 import com.zinou.Livrily.model.Livraison_Line;
 import com.zinou.Livrily.model.Livraisoncomplette;
@@ -31,7 +29,7 @@ public class LivraisonRepositoryImpl implements LivraisonRepository {
 
 		String sql="SELECT * FROM Livraison inner join livraison_line "
 				+ "on (livraison.livraison_id = livraison_line.livraison_id)"
-				+ " where livraison.eslivre= (?)";
+				+ " where livraison.estLivre= (?)";
 		PreparedStatement stmt;
 
 
@@ -68,9 +66,9 @@ public class LivraisonRepositoryImpl implements LivraisonRepository {
 				}
 
 				Livraison_Line livraison_Line= new Livraison_Line();
-				livraison_Line.setLivraison_Line_ID(rs.getInt("livraisonline_id"));
-				livraison_Line.setProduit_ID(rs.getInt("prduit_id"));
-				livraison_Line.setQuantitylivre(rs.getInt("quantitelivre"));
+				livraison_Line.setLivraison_Line_ID(rs.getInt("livraison_line_id"));
+				livraison_Line.setProduit_ID(rs.getInt("produit_id"));
+				livraison_Line.setQuantitylivre(rs.getInt("quantitylivre"));
 				livraison_Line.setVolume(rs.getDouble("volume"));
 				livraisonlines.add(livraison_Line);
 			}
@@ -127,9 +125,9 @@ public class LivraisonRepositoryImpl implements LivraisonRepository {
 				}
 
 				Livraison_Line livraison_Line= new Livraison_Line();
-				livraison_Line.setLivraison_Line_ID(rs.getInt("livraisonline_id"));
-				livraison_Line.setProduit_ID(rs.getInt("prduit_id"));
-				livraison_Line.setQuantitylivre(rs.getInt("quantitelivre"));
+				livraison_Line.setLivraison_Line_ID(rs.getInt("livraison_line_id"));
+				livraison_Line.setProduit_ID(rs.getInt("produit_id"));
+				livraison_Line.setQuantitylivre(rs.getInt("quantitylivre"));
 				livraison_Line.setVolume(rs.getDouble("volume"));
 				livraisonlines.add(livraison_Line);
 			}
@@ -149,14 +147,15 @@ public class LivraisonRepositoryImpl implements LivraisonRepository {
 	public Livraison createLivraison(Livraison livraison) {		
 
 		//		TODO corriger requette
-		String sql = "INSERT INTO `Livraison` ( `commande_ID`, `livreaur_id`, `NumeroLivraison`, `estLivre`) VALUES  (?,?,?,?) ";
+		String sql = "INSERT INTO `livrili`.`livraison` ( `commande_id`, `livreur_id`, `NumeroLivraison`, `volumneTotal`, `estLivre`)  VALUES  (?,?,?,?,?) ";
 		PreparedStatement stmt;
 		try {
 			stmt = db.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, livraison.getCommande_ID());
 			stmt.setInt(2, livraison.getLivreur_ID());
 			stmt.setString(3, livraison.getNumeroLivraison());
-			stmt.setBoolean(4, livraison.isEstLivre());
+			stmt.setInt(4, livraison.getVolumneTotal());
+			stmt.setBoolean(5, livraison.isEstLivre());
 
 			stmt.executeUpdate();
 
@@ -179,7 +178,7 @@ public class LivraisonRepositoryImpl implements LivraisonRepository {
 	public Livraison_Line createLivraisonLine(Livraison_Line line) {		
 
 		//		TODO corriger requette
-		String sql = "INSERT INTO `Livraison_Line` ( `Livraison_ID`, `produit_id`, `quantitylivre`, `volumbe`) VALUES  (?,?,?,?) ";
+		String sql = "INSERT INTO `livrili`.`livraison_line` (`livraison_id`, `produit_id`, `quantitylivre`, `volume`) VALUES  (?,?,?,?) ";
 		PreparedStatement stmt;
 		try {
 			stmt = db.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
@@ -209,7 +208,7 @@ public class LivraisonRepositoryImpl implements LivraisonRepository {
 	public void updateLivraison(Double volumneTotal, int livraison_id) {		
 
 		//		TODO corriger requette
-		String sql = "UPDATE `Livraison` set volume = ?  where livraison_id = ? ";
+		String sql = "UPDATE `Livraison` set volumneTotal = ?  where livraison_id = ? ";
 		PreparedStatement stmt;
 		try {
 			stmt = db.getConnection().prepareStatement(sql);

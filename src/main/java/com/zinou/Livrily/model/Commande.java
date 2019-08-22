@@ -9,7 +9,7 @@ public class Commande {
 	private int Clinet_ID;
 	private Timestamp DtaedeCommande;
 	private String Statue;
-	private String NumeroCommande;
+	private int NumeroCommande;
 	private Double total;
 	private String tarif;
 	private int tva;
@@ -43,12 +43,8 @@ public class Commande {
 	public void setStatue(String statue) {
 		Statue = statue;
 	}
-	public String getNumeroCommande() {
-		return NumeroCommande;
-	}
-	public void setNumeroCommande(String numeroCommande) {
-		NumeroCommande = numeroCommande;
-	}
+	
+	
 	public Double getTotal() {
 		return total;
 	}
@@ -66,6 +62,12 @@ public class Commande {
 	}
 	public void setTva(int tva) {
 		this.tva = tva;
+	}
+	public int getNumeroCommande() {
+		return NumeroCommande;
+	}
+	public void setNumeroCommande(int numeroCommande) {
+		NumeroCommande = numeroCommande;
 	}
 
 

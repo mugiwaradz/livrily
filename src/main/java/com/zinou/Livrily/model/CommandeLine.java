@@ -6,7 +6,6 @@ public class CommandeLine {
 	private int Commande_ID;
 	private int Produit_ID;
 	private Double prix;
-	private int promotion;
 	private int quantityCommande;
 	private Double totalLine;
 	public int getCommandeLine_ID() {
@@ -33,12 +32,8 @@ public class CommandeLine {
 	public void setPrix(Double prix) {
 		this.prix = prix;
 	}
-	public int getPromotion() {
-		return promotion;
-	}
-	public void setPromotion(int promotion) {
-		this.promotion = promotion;
-	}
+
+
 	public int getQuantityCommande() {
 		return quantityCommande;
 	}
@@ -54,7 +49,7 @@ public class CommandeLine {
 
 
 
-	
+
 
 
 

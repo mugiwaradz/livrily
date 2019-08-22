@@ -2,15 +2,14 @@ package com.zinou.Livrily.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.zinou.Livrily.model.Produit;
 import com.zinou.Livrily.repository.ArticleRepository;
+import com.zinou.Livrily.repository.ArticleRepositoryImpl;
 
 public class ArticleServiceImpl implements ArticleService {
 
-	@Autowired
-	ArticleRepository repository;
+	
+	ArticleRepository repository = new ArticleRepositoryImpl();
 	
 	@Override
 	public Produit getProduit(int id_article) {

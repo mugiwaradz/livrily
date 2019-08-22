@@ -57,6 +57,7 @@ public class FactureServiceImpl implements FactureService{
 			fLine.setProduitID(line.getProduit_ID());
 			fLine.setQuantityFacture(line.getQuantityCommande());
 			fLine.setPrix(line.getPrix());
+			fLine.setTotalLine(line.getTotalLine());
 			fLine = repository.createFactureLine(fLine);
 			total = total + fLine.getTotalLine();
 		}

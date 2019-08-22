@@ -40,6 +40,7 @@ public class LivraisonServiceImpl implements LivraisonService{
 		livraison.setEstLivre(false);
 		livraison.setLivreur_ID(livreur_id);
 
+		
 		livraison = repository.createLivraison(livraison);
 
 		Double volumneTotal = 0.0;

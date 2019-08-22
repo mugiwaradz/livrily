@@ -26,23 +26,30 @@ public class CommandeRepositoryImpl implements CommandeRepository {
 	@Override
 	public List<Commandecomplette> getCommandes(Timestamp date_commande, int id_commande) {
 
-		String sql = null ;
-		if (date_commande != null)
-			sql="SELECT * FROM commande inner join commande_line "
-					+ "on (commande.commande_id = commande_line.commande_id)"
-					+ " where commande.datecommande<(?) order by commande.datecommande";
-		
-		else if (id_commande > 0)
-			sql="SELECT * FROM commande inner join commande_line "
-					+ "on (commande.commande_id = commande_line.commande_id)"
-					+ " where commande.id_commande = (?) ";
+		    ResultSet rs=null;
+			String sql = null ;
+			try {
+			if (date_commande != null) {
+				sql="SELECT * FROM commande inner join commande_line "
+						+ "on (commande.commande_id = commande_line.commande_id)"
+						+ " where commande.datecommande<(?) order by commande.datecommande";
+				PreparedStatement stmt;
+				stmt = db.getConnection().prepareStatement(sql);
+				stmt.setTimestamp(1, date_commande);
+				 rs = stmt.executeQuery();
 
-		PreparedStatement stmt;
+			}else if (id_commande > 0) {
+				sql="SELECT * FROM commande inner join commande_line "
+						+ "on (commande.commande_id = commande_line.commande_id)"
+						+ " where commande.commande_id = (?) ";
+				PreparedStatement stmt;
+				stmt = db.getConnection().prepareStatement(sql);
+				stmt.setInt(1, id_commande);
+				 rs = stmt.executeQuery();
 
-		try {
-			stmt = db.getConnection().prepareStatement(sql);
-			stmt.setTimestamp(1, date_commande);
-			ResultSet rs = stmt.executeQuery();
+			}
+
+			
 			List<Commandecomplette> commandes = new ArrayList<>();
 
 			int old_comande_id=0;
@@ -64,8 +71,8 @@ public class CommandeRepositoryImpl implements CommandeRepository {
 					commande.setSupermarché_ID(rs.getInt(2));
 					commande.setClinet_ID(rs.getInt(3));
 					commande.setDtaedeCommande(rs.getTimestamp(4));
-					commande.setNumeroCommande(rs.getString(5));
-					commande.setStatue(rs.getString(6));
+					commande.setStatue(rs.getString(5));
+					commande.setNumeroCommande(rs.getInt(6));
 					commande.setTarif(rs.getString(7));
 					commande.setTotal(rs.getDouble(8));
 					commande.setTva(rs.getInt(9));
@@ -96,16 +103,15 @@ public class CommandeRepositoryImpl implements CommandeRepository {
 	public CommandeLine saveCommandeLine(CommandeLine line) {		
 
 		//		TODO corriger requette
-		String sql = "INSERT INTO `Commande_line` ( `Commande_ID`, `produit_id`, `prix`, `promotion`, `quantityCommande`, `totalLine`) VALUES  (?,?,?,?,?,?) ";
+		String sql = "INSERT INTO `Commande_line` ( `Commande_ID`, `produit_id`, `prix`, `quantityCommande`, `totalLine`) VALUES  (?,?,?,?,?) ";
 		PreparedStatement stmt;
 		try {
 			stmt = db.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, line.getCommande_ID());
 			stmt.setInt(2, line.getProduit_ID());
 			stmt.setDouble(3, line.getPrix());
-			stmt.setInt(4, line.getPromotion());
-			stmt.setInt(5, line.getQuantityCommande());
-			stmt.setDouble(6, line.getTotalLine());
+			stmt.setInt(4, line.getQuantityCommande());
+			stmt.setDouble(5, line.getTotalLine());
 
 			stmt.executeUpdate();
 
@@ -123,8 +129,8 @@ public class CommandeRepositoryImpl implements CommandeRepository {
 		return line;
 
 	}
-	
-	
+
+
 	@Override
 	public void updateCommande(Double prixTotal, int commande_ID) {		
 
@@ -148,22 +154,24 @@ public class CommandeRepositoryImpl implements CommandeRepository {
 
 		//		TODO corriger requette
 		//TODO plsql numero commande sequence
-		String sql = "INSERT INTO `Commande` ( `client_id`, `supermarché_id`, `DateDeCommande`, `statue`, `NumeroCommande`, `tarif`, `tva`) VALUES  (?,?,?,?,getNumeroCommande(),?,?) ";
+		String sql = "INSERT INTO `Commande` ( `client_id`, `supermarche_id`, `datecommande`, `statue`, `NumeroCommande`, `tarif`, `tva`) VALUES  (?,?,?,?,?,?,?) ";
 		PreparedStatement stmt;
 		try {
 			stmt = db.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, commande.getClinet_ID());
 			stmt.setInt(2, commande.getSupermarché_ID());
 			stmt.setTimestamp(3, commande.getDtaedeCommande());
-			stmt.setString(4, commande.getStatue());
-			stmt.setString(5, commande.getTarif());
-			stmt.setInt(6, commande.getTva());
+			stmt.setString(4, "non-Livré");
+			stmt.setString(5, null);
+			stmt.setInt(6, 0);
+			stmt.setInt(7, commande.getTva());
 
 			stmt.executeUpdate();
 
 			ResultSet generatedKeys = stmt.getGeneratedKeys();
 			if (generatedKeys.next()) {
 				commande.setCommande_ID(generatedKeys.getInt(1));
+				commande.setNumeroCommande(1000+generatedKeys.getInt(1));
 			}
 			else {
 				throw new SQLException("Creating commande failed, no ID obtained.");

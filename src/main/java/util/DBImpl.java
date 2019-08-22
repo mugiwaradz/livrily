@@ -14,7 +14,7 @@ public class DBImpl implements DB {
 	private final static String USERNAME = "root";
 	private final static String PASSWORD = "zinou1234";
 	private final static String DB_HOST = "localhost:3306";
-	private final static String DB_NAME = "livrili?useSSL=false";
+	private final static String DB_NAME = "livrili?useSSL=false&serverTimezone=UTC";
 
 	@Override
 	public Connection getConnection() {
