@@ -1,9 +1,12 @@
 package com.zinou.Livrily.service;
 
-import java.io.File;
 import java.util.List;
 
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
+
 import com.zinou.Livrily.model.Facturecomplette;
+
 
 
 public interface FactureService {
@@ -12,6 +15,6 @@ public interface FactureService {
 
 	boolean createFacture(int id_facture);
 
-	File printFacture(int id_facture);
+	ResponseEntity<InputStreamResource> printFacture(int id_facture);
 
 }

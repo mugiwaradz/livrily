@@ -1,20 +1,32 @@
 package com.zinou.Livrily.repository;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.zinou.Livrily.model.Facture;
 import com.zinou.Livrily.model.FactureLine;
 import com.zinou.Livrily.model.Facturecomplette;
 
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import util.DB;
 import util.DBImpl;
 
@@ -23,7 +35,7 @@ public class FactureRepositoryImpl implements FactureRepository {
 
 	DB db = new DBImpl();
 	Logger log = Logger.getLogger(ArticleRepositoryImpl.class.getName());
-	
+
 
 
 	@Override
@@ -31,14 +43,14 @@ public class FactureRepositoryImpl implements FactureRepository {
 
 		String sql="SELECT * FROM Facture inner join Facture_line "
 				+ "on (Facture.Facture_id = Facture_line.Facture_id)";
-				
+
 		PreparedStatement stmt;
 
 
 		try {
 			stmt = db.getConnection().prepareStatement(sql);
 
-//			stmt.setBoolean(1, estlivre);
+			//			stmt.setBoolean(1, estlivre);
 			ResultSet rs = stmt.executeQuery();
 			List<Facturecomplette> factures = new ArrayList<>();
 
@@ -62,7 +74,7 @@ public class FactureRepositoryImpl implements FactureRepository {
 					facture.setTotal(rs.getDouble(6));
 					facture.setTva(rs.getInt(7));
 
-					
+
 					facturecomplette.setFacture(facture);
 					facturecomplette.setFacturelines(facturelines);
 
@@ -170,6 +182,34 @@ public class FactureRepositoryImpl implements FactureRepository {
 			log.log(Level.SEVERE, e.getMessage(), e);
 		}
 
+	}
+
+	@Override
+	public ResponseEntity<InputStreamResource> printFacture(int id_facture) {
+		HashMap<String, Object> parameters = new HashMap<String, Object>();
+		parameters.put("id_facture", id_facture);
+		Connection datasource = db.getConnection();
+		try {
+			JasperReport jrxmlFile = JasperCompileManager.compileReport("src/main/resources/facture.jrxml");
+//			JasperPrint jasperPrint; = JasperFillManager.fillReport(jasperReport, hm, ds); //with datasource
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jrxmlFile, parameters, new JREmptyDataSource());
+
+			String filename =   "facture_" + id_facture + ".pdf";
+			JasperExportManager.exportReportToPdfFile(jasperPrint, filename);
+
+			ClassPathResource pdfFile = new ClassPathResource(filename);
+
+			return ResponseEntity
+					.ok()
+					.contentLength(pdfFile.contentLength())
+					.contentType(MediaType.parseMediaType("application/octet-stream"))
+					.body(new InputStreamResource(pdfFile.getInputStream()));
+
+		} catch (Exception e) {
+			log.log(Level.SEVERE, e.getMessage(), e);
+		}
+		
+		return null;
 	}
 
 }

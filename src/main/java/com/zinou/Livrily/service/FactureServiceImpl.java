@@ -1,8 +1,9 @@
 package com.zinou.Livrily.service;
 
-import java.io.File;
 import java.util.List;
 
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.zinou.Livrily.model.CommandeLine;
@@ -14,6 +15,7 @@ import com.zinou.Livrily.model.Livraisoncomplette;
 import com.zinou.Livrily.repository.FactureRepository;
 import com.zinou.Livrily.repository.FactureRepositoryImpl;
 
+
 @Service
 public class FactureServiceImpl implements FactureService{
 
@@ -21,12 +23,12 @@ public class FactureServiceImpl implements FactureService{
 	FactureRepository repository=new FactureRepositoryImpl();
 
 	LivraisonService livraisonService= new LivraisonServiceImpl();
-	
+
 	CommandeService commandeService= new CommandeServiceImpl();
 
 
-			@Override
-			public List<Facturecomplette> getFactures() {
+	@Override
+	public List<Facturecomplette> getFactures() {
 		return repository.getFactures();
 	}
 
@@ -45,9 +47,9 @@ public class FactureServiceImpl implements FactureService{
 		facture.setClient_ID(commande.getCommande().getClinet_ID());
 		facture.setTarif(commande.getCommande().getTarif());
 		facture.setTva(commande.getCommande().getTva());
-		
+
 		facture = repository.createFacture(facture);
-		
+
 
 		Double total = 0.0;
 
@@ -68,9 +70,8 @@ public class FactureServiceImpl implements FactureService{
 	}
 
 	@Override
-	public File printFacture(int id_article) {
-		// TODO print with Ireport
-		return null;
+	public ResponseEntity<InputStreamResource> printFacture(int id_facture) {
+		return repository.printFacture(id_facture);
 	}
 
 }
